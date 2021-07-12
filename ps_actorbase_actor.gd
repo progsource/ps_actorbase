@@ -21,6 +21,10 @@ extends Node2D
 # Actor
 
 
+# warning-ignore:unused_signal
+signal component_message_send(message_type, info)
+
+
 const ActorComponent = preload("res://addons/ps_actorbase/ps_actorbase_actorcomponent.gd")
 
 

@@ -47,6 +47,7 @@ var animation_transitions := {} # {"start_node_name" : ["target_node_name1", "ta
 var _sprite : Sprite = null
 var _animation_player : AnimationPlayer = null
 var _animation_tree : AnimationTree = null
+var _state_machine : AnimationNodeStateMachinePlayback = null
 
 
 func ready() -> void :
@@ -54,11 +55,21 @@ func ready() -> void :
   _init_animation_player()
   _init_animation_tree()
 
+  # warning-ignore:return_value_discarded
+  actor.connect("component_message_send", self, "_on_actor_component_message_send")
+
 
 func process(_delta) -> void:
-  var state_machine = _animation_tree.get("parameters/playback")
-  var current_animation_node = state_machine.get_current_node()
+  var current_animation_node = _state_machine.get_current_node()
   _animation_tree.set("parameters/" + current_animation_node + "/blend_position", actor.direction)
+
+
+func _on_actor_component_message_send(message_type, info) -> void :
+  if message_type == "animation_state":
+    var current_animation_node = _state_machine.get_current_node()
+
+    if current_animation_node != info:
+      _state_machine.travel(info)
 
 
 func _init_sprite() -> void :
@@ -102,6 +113,8 @@ func _init_animation_tree() -> void :
   _animation_tree.active = true
 
   actor.add_child(_animation_tree)
+
+  _state_machine = _animation_tree.get("parameters/playback")
 
 
 func _build_animation(name : String, frames : Array) -> Animation :
