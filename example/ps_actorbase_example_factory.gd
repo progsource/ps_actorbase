@@ -26,28 +26,28 @@ const PhysicsMoveAndCollideComponent = preload("res://addons/ps_actorbase/compon
 const Spritesheet2DComponent = preload("res://addons/ps_actorbase/components/ps_actorbase_spritesheet2dcomponent.gd")
 
 const UpdateSpritesheetComponent = preload("res://addons/ps_actorbase/example/ps_actorbase_example_updatespritesheetcomponent.gd")
-
+const StupidAIComponent = preload("res://addons/ps_actorbase/example/ps_actorbase_example_stupidaicomponent.gd")
 
 static func createPlayerExample32x64(pos : Vector2) -> Actor :
   var actor = Actor.new()
 
   actor.add_logic_component(InputMoveComponent.new())
 
-  var physicsComponent = PhysicsMoveAndCollideComponent.new()
-  physicsComponent.feet_collider = Rect2(-16, 22, 32, 10)
-  physicsComponent.collision_layer = [1]
-  physicsComponent.collision_mask = [1]
+  var physics_component = PhysicsMoveAndCollideComponent.new()
+  physics_component.feet_collider = Rect2(-16, 22, 32, 10)
+  physics_component.collision_layer = [1]
+  physics_component.collision_mask = [1]
 
-  actor.add_physics_component(physicsComponent)
+  actor.add_physics_component(physics_component)
 
   actor.add_graphics_component(UpdateSpritesheetComponent.new())
 
-  var spritesheetComponent = Spritesheet2DComponent.new()
-  spritesheetComponent.texture = "res://addons/ps_actorbase/example/char_32x64_template.png"
-  spritesheetComponent.frame_size = Vector2(6, 4)
-  spritesheetComponent.frame_time_distance = 0.2
-  spritesheetComponent.region_rect = Rect2(Vector2.ZERO, Vector2(192, 256))
-  spritesheetComponent.animations = {
+  var spritesheet_component = Spritesheet2DComponent.new()
+  spritesheet_component.texture = "res://addons/ps_actorbase/example/char_32x64_template.png"
+  spritesheet_component.frame_size = Vector2(6, 4)
+  spritesheet_component.frame_time_distance = 0.2
+  spritesheet_component.region_rect = Rect2(Vector2.ZERO, Vector2(192, 256))
+  spritesheet_component.animations = {
     "idle_down": [1, 0, 1, 2],
     "idle_left" : [7, 6, 7, 8],
     "idle_right": [13, 12, 13, 14],
@@ -57,13 +57,13 @@ static func createPlayerExample32x64(pos : Vector2) -> Actor :
     "run_right": [16, 15, 16, 17],
     "run_up": [22, 21, 22, 23],
     }
-  spritesheetComponent.animation_nodes = {
+  spritesheet_component.animation_nodes = {
     "idle": ["idle_down", "idle_left", "idle_right", "idle_up"],
     "run": ["run_down", "run_left", "run_right", "run_up"],
     }
-  spritesheetComponent.animation_transitions = {"idle": ["run"], "run": ["idle"]}
+  spritesheet_component.animation_transitions = {"idle": ["run"], "run": ["idle"]}
 
-  actor.add_graphics_component(spritesheetComponent)
+  actor.add_graphics_component(spritesheet_component)
 
   actor.position = pos
   actor.add_to_group("player")
@@ -71,35 +71,38 @@ static func createPlayerExample32x64(pos : Vector2) -> Actor :
   return actor
 
 
-static func createAIExample32x32(pos : Vector2) -> Actor :
+static func createAIExample32x32(pos : Vector2, screen_size : Vector2) -> Actor :
   var actor = Actor.new()
 
-#  actor.add_logic_component(ExampleStupidIdleAI.new())
+  var stupid_ai = StupidAIComponent.new()
+  stupid_ai.screen_size = screen_size
+  stupid_ai.ai_size = Vector2(32, 32)
+  actor.add_logic_component(stupid_ai)
 
-  var physicsComponent = PhysicsMoveAndCollideComponent.new()
-  physicsComponent.feet_collider = Rect2(-16, 6, 32, 10)
-  physicsComponent.collision_layer = [1]
-  physicsComponent.collision_mask = [1]
+  var physics_component = PhysicsMoveAndCollideComponent.new()
+  physics_component.feet_collider = Rect2(-16, 6, 32, 10)
+  physics_component.collision_layer = [1]
+  physics_component.collision_mask = [1]
 
-  actor.add_physics_component(physicsComponent)
+  actor.add_physics_component(physics_component)
 
-  var spritesheetComponent = Spritesheet2DComponent.new()
-  spritesheetComponent.texture = "res://addons/ps_actorbase/example/char_32x32_template.png"
-  spritesheetComponent.frame_size = Vector2(3, 4)
-  spritesheetComponent.frame_time_distance = 0.2
-  spritesheetComponent.region_rect = Rect2(Vector2.ZERO, Vector2(96, 128))
-  spritesheetComponent.animations = {
+  var spritesheet_component = Spritesheet2DComponent.new()
+  spritesheet_component.texture = "res://addons/ps_actorbase/example/char_32x32_template.png"
+  spritesheet_component.frame_size = Vector2(3, 4)
+  spritesheet_component.frame_time_distance = 0.2
+  spritesheet_component.region_rect = Rect2(Vector2.ZERO, Vector2(96, 128))
+  spritesheet_component.animations = {
     "idle_down": [1, 0, 1, 2],
     "idle_left" : [4, 3, 4, 5],
     "idle_right": [7, 6, 7, 8],
     "idle_up": [10, 9, 10, 11]
     }
-  spritesheetComponent.animation_nodes = {
+  spritesheet_component.animation_nodes = {
     "idle": ["idle_down", "idle_left", "idle_right", "idle_up"]
     }
-  spritesheetComponent.animation_transitions = {}
+  spritesheet_component.animation_transitions = {}
 
-  actor.add_graphics_component(spritesheetComponent)
+  actor.add_graphics_component(spritesheet_component)
 
   actor.position = pos
   actor.add_to_group("ai")

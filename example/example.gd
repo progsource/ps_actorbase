@@ -22,10 +22,11 @@ extends Node2D
 const factory = preload("res://addons/ps_actorbase/example/ps_actorbase_example_factory.gd")
 
 func _ready() -> void:
-  var center = OS.window_size / 4
+  var center = get_viewport().size * 0.5
   var player = factory.createPlayerExample32x64(center)
   add_child(player)
 
   var aipos = Vector2(center.x - 64, center.y)
-  var ai = factory.createAIExample32x32(aipos)
+  var screen_size = get_viewport().size
+  var ai = factory.createAIExample32x32(aipos, screen_size)
   add_child(ai)
