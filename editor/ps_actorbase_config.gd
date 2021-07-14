@@ -18,35 +18,17 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
 tool
-extends EditorPlugin
+extends Control
+# psActorBaseConfig
 
 
-const ps_ActorBaseDebugGlobal = preload("res://addons/ps_actorbase/editor/ps_actorbase_debug_global.gd")
-const ps_ActorBaseDebugGlobal_name = "ps_ActorBaseDebugGlobal"
+func _ready() -> void:
+  # warning-ignore:return_value_discarded
+  $VBoxContainer/FeetColliderDebugDraw.connect("toggled", self, "_on_feet_collider_debug_draw_toggled")
 
 
-var _dock = null
-
-
-func _enter_tree() -> void:
-  _dock = preload("res://addons/ps_actorbase/editor/ps_actorbase_config.tscn").instance()
-  add_control_to_bottom_panel(_dock, "ps ActorBase Config")
-
-  var singleton = ps_ActorBaseDebugGlobal.new()
-  singleton.name = ps_ActorBaseDebugGlobal_name
-
-  get_tree().root.add_child(singleton)
-
-  singleton.save_file()
-
-
-func _exit_tree() -> void:
-  if _dock != null:
-    remove_control_from_bottom_panel(_dock)
-    _dock.queue_free()
-
-  if get_tree().root.has_node(ps_ActorBaseDebugGlobal_name):
-    var singleton = get_tree().root.get_node(ps_ActorBaseDebugGlobal_name)
-    if singleton:
-      singleton.remove_file()
-      singleton.queue_free()
+func _on_feet_collider_debug_draw_toggled(value : bool) -> void:
+  var singletonNodePath = "ps_ActorBaseDebugGlobal"
+  if get_tree().root.has_node(singletonNodePath):
+    var singleton = get_tree().root.get_node(singletonNodePath)
+    singleton.set_is_feet_collider_debug_draw_enabled(value)

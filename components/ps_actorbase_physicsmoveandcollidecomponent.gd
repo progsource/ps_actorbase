@@ -68,7 +68,7 @@ func _build_kinematic_body() -> KinematicBody2D :
 
   var collision_shape = _build_collision_shape()
 
-  if OS.is_debug_build():
+  if actor.debug_global != null && actor.debug_global.is_feet_collider_debug_draw_enabled:
     var color_rect_debug = _build_debug_color_rect()
     body.add_child(color_rect_debug)
 

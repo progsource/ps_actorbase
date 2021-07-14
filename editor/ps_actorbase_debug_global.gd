@@ -18,35 +18,36 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
 tool
-extends EditorPlugin
+extends Node
+# ps_ActorBaseDebugGlobal
 
 
-const ps_ActorBaseDebugGlobal = preload("res://addons/ps_actorbase/editor/ps_actorbase_debug_global.gd")
-const ps_ActorBaseDebugGlobal_name = "ps_ActorBaseDebugGlobal"
+const config_file = "res://.ps_actorbase_config.json"
 
 
-var _dock = null
+var config = {"is_feet_collider_debug_draw_enabled" : false}
 
 
-func _enter_tree() -> void:
-  _dock = preload("res://addons/ps_actorbase/editor/ps_actorbase_config.tscn").instance()
-  add_control_to_bottom_panel(_dock, "ps ActorBase Config")
-
-  var singleton = ps_ActorBaseDebugGlobal.new()
-  singleton.name = ps_ActorBaseDebugGlobal_name
-
-  get_tree().root.add_child(singleton)
-
-  singleton.save_file()
+func set_is_feet_collider_debug_draw_enabled(value : bool) -> void :
+  config.is_feet_collider_debug_draw_enabled = value
+  save_file()
 
 
-func _exit_tree() -> void:
-  if _dock != null:
-    remove_control_from_bottom_panel(_dock)
-    _dock.queue_free()
+func save_file() -> void :
+  var file = File.new()
+  var json = to_json(config)
 
-  if get_tree().root.has_node(ps_ActorBaseDebugGlobal_name):
-    var singleton = get_tree().root.get_node(ps_ActorBaseDebugGlobal_name)
-    if singleton:
-      singleton.remove_file()
-      singleton.queue_free()
+  file.open(config_file, file.WRITE)
+  file.store_string(json)
+  file.close()
+
+
+func remove_file() -> void :
+  var file = File.new()
+
+  var does_file_exist = file.file_exists(config_file)
+  if not does_file_exist:
+    return
+
+  var dir = Directory.new()
+  dir.remove(config_file)

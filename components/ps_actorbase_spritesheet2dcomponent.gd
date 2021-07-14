@@ -85,7 +85,13 @@ func _init_sprite() -> void :
   _sprite.region_rect = region_rect
   _sprite.hframes = frame_size.x
   _sprite.vframes = frame_size.y
-#  _sprite.modulate.a = 0.5 # debug
+  if actor.debug_global != null && actor.debug_global.is_feet_collider_debug_draw_enabled:
+    # this might not be the best way, to make sure, that the collider debug is
+    # visible, but it works for now
+    # if there is need for it, the debug collider drawing could happen on a
+    # different layer, even though that would require the debug draw to be
+    # probably updated manually all the time...
+    _sprite.modulate.a = 0.5
 
   actor.add_child(_sprite)
 
