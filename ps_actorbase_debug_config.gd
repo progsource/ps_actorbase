@@ -17,14 +17,13 @@
 #LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
-tool
 extends Node
-# ps_ActorBaseDebugGlobal
 
 
 const config_file = "res://.ps_actorbase_config.json"
 
 
+# default values of config should be set to live environment values
 var config = {"is_feet_collider_debug_draw_enabled" : false}
 
 
@@ -40,6 +39,26 @@ func save_file() -> void :
   file.open(config_file, file.WRITE)
   file.store_string(json)
   file.close()
+
+
+func read_file() -> void :
+  if not OS.is_debug_build():
+    return
+
+  var dict := {}
+
+  var file = File.new()
+
+  var does_file_exist = file.file_exists(config_file)
+  if not does_file_exist:
+    return
+
+  file.open(config_file, file.READ)
+  var text = file.get_as_text()
+  dict = parse_json(text)
+  file.close()
+
+  config = dict
 
 
 func remove_file() -> void :

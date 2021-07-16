@@ -26,14 +26,14 @@ signal component_message_send(message_type, info)
 
 
 const ActorComponent = preload("res://addons/ps_actorbase/ps_actorbase_actorcomponent.gd")
-const debug_global_node_path = "ps_ActorBaseDebugGlobal"
+const ps_ActorBaseDebugConfig = preload("res://addons/ps_actorbase/ps_actorbase_debug_config.gd")
 
 
 var velocity := Vector2.ZERO setget _set_velocity, _get_velocity
 var speed := 95.0 setget _set_speed, _get_speed
 var direction := Vector2.ZERO setget _set_direction, _get_direction
 
-var debug_global = null # null or dict
+var debug_config = null # null or dict
 
 
 var _logic_components := [] # like input/AI/...
@@ -42,10 +42,12 @@ var _graphics_components := [] # like sprites, animations, ...
 
 
 func _init() -> void:
+  # if someone has a good idea how to not do this for every actor, feel free to
+  # open an issue or pull request
   if OS.is_debug_build():
-    var debug_dict = _get_debug_config()
-    if not debug_dict.empty():
-      debug_global = debug_dict
+    var cfg = ps_ActorBaseDebugConfig.new()
+    cfg.read_file()
+    debug_config = cfg.config
 
 
 func _ready() -> void :
@@ -116,24 +118,3 @@ func _get_direction() -> Vector2 :
 func _init_component(component : ActorComponent) -> void :
   component.actor = self
   component.init()
-
-# if someone has a good idea how to not do this for every actor, feel free to
-# open an issue or pull request
-func _get_debug_config() -> Dictionary :
-  assert(OS.is_debug_build())
-
-  var config_file = "res://.ps_actorbase_config.json"
-  var dict := {}
-
-  var file = File.new()
-
-  var does_file_exist = file.file_exists(config_file)
-  if not does_file_exist:
-    return {}
-
-  file.open(config_file, file.READ)
-  var text = file.get_as_text()
-  dict = parse_json(text)
-  file.close()
-
-  return dict

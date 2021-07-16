@@ -28,7 +28,7 @@ func _ready() -> void:
 
 
 func _on_feet_collider_debug_draw_toggled(value : bool) -> void:
-  var singletonNodePath = "ps_ActorBaseDebugGlobal"
-  if get_tree().root.has_node(singletonNodePath):
-    var singleton = get_tree().root.get_node(singletonNodePath)
-    singleton.set_is_feet_collider_debug_draw_enabled(value)
+  var debug_config_node_path = "ps_ActorBaseDebugGlobal"
+  if get_tree().root.has_node(debug_config_node_path):
+    var debug_config = get_tree().root.get_node(debug_config_node_path)
+    debug_config.set_is_feet_collider_debug_draw_enabled(value)
