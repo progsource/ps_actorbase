@@ -22,13 +22,21 @@ extends Control
 # psActorBaseConfig
 
 
+var _debug_config = null
+
+
 func _ready() -> void:
+  var debug_config_node_path = "ps_ActorBaseDebugGlobal"
+  if get_tree().root.has_node(debug_config_node_path):
+    _debug_config = get_tree().root.get_node(debug_config_node_path)
+
+  if _debug_config != null:
+    $VBoxContainer/FeetColliderDebugDraw.pressed = _debug_config.config.is_feet_collider_debug_draw_enabled
+
   # warning-ignore:return_value_discarded
   $VBoxContainer/FeetColliderDebugDraw.connect("toggled", self, "_on_feet_collider_debug_draw_toggled")
 
 
 func _on_feet_collider_debug_draw_toggled(value : bool) -> void:
-  var debug_config_node_path = "ps_ActorBaseDebugGlobal"
-  if get_tree().root.has_node(debug_config_node_path):
-    var debug_config = get_tree().root.get_node(debug_config_node_path)
-    debug_config.set_is_feet_collider_debug_draw_enabled(value)
+  if _debug_config != null:
+    _debug_config.set_is_feet_collider_debug_draw_enabled(value)

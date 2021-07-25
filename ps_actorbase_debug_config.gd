@@ -36,7 +36,7 @@ func save_file() -> void :
   var file = File.new()
   var json = to_json(config)
 
-  file.open(config_file, file.WRITE)
+  file.open(config_file, File.WRITE)
   file.store_string(json)
   file.close()
 
@@ -53,7 +53,7 @@ func read_file() -> void :
   if not does_file_exist:
     return
 
-  file.open(config_file, file.READ)
+  file.open(config_file, File.READ)
   var text = file.get_as_text()
   dict = parse_json(text)
   file.close()

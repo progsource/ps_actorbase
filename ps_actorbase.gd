@@ -31,15 +31,16 @@ var _debug_config_singleton = null
 
 
 func _enter_tree() -> void:
-  _dock = ps_ActorBaseDebugConfigScene.instance()
-  add_control_to_bottom_panel(_dock, "ps ActorBase Config")
-
   _debug_config_singleton = ps_ActorBaseDebugConfig.new()
   _debug_config_singleton.name = ps_ActorBaseDebugGlobal_name
 
-  get_tree().root.add_child(_debug_config_singleton)
+  get_tree().root.call_deferred("add_child", _debug_config_singleton)
 
+  _debug_config_singleton.read_file()
   _debug_config_singleton.save_file()
+
+  _dock = ps_ActorBaseDebugConfigScene.instance()
+  call_deferred("add_control_to_bottom_panel", _dock, "ps ActorBase Config")
 
 
 func _exit_tree() -> void:
