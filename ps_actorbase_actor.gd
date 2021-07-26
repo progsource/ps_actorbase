@@ -59,7 +59,7 @@ func _ready() -> void :
     c.ready()
 
 
-func _input(event) -> void :
+func _unhandled_input(event) -> void :
   for c in _logic_components:
     c.input(event)
   for c in _physics_components:
